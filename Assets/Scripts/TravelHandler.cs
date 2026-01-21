@@ -7,12 +7,16 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Serialization;
 
-public struct TravelData
+public class TravelData
 {
-    public bool LineReaderSetup;
+    public bool IsLineReaderSetup;
+    public bool IsLineRendererMeshSetup;
+    
     // Line renderer used for visualizing travel line
     public LineRenderer LineRenderer;
 
+    public MeshCollider meshCollider;
+    
     public string Callsign;
     public string Airline;
 
@@ -47,8 +51,38 @@ public struct TravelData
             destinationVisual);
 
         LineRenderer = Origin.CoordinateVisual.AddComponent<LineRenderer>();
-        ;
-        LineReaderSetup = false;
+        IsLineReaderSetup = false;
+    }
+
+    public void SetupLineRenderer(Material arcMaterial, Color arcColor, float lineWidth, int arcSegments, Camera mainCamera)
+    {
+        if (IsLineReaderSetup) return;
+        
+        LineRenderer.material = arcMaterial;
+        LineRenderer.startColor = arcColor;
+        LineRenderer.endColor = arcColor;
+        LineRenderer.startWidth = lineWidth;
+        LineRenderer.endWidth = lineWidth;
+        LineRenderer.positionCount = arcSegments;
+        LineRenderer.useWorldSpace = true;
+        
+        IsLineReaderSetup = true;
+    }
+
+    public void GenerateMesh()
+    {
+        if (meshCollider == null) meshCollider = Origin.CoordinateVisual.AddComponent<MeshCollider>();
+            
+        Mesh mesh = new Mesh();
+        LineRenderer.BakeMesh(mesh, true);
+        
+        var vertices = mesh.vertices;
+        Origin.CoordinateVisual.transform.InverseTransformPoints(vertices);
+        mesh.vertices = vertices;
+        mesh.RecalculateBounds();
+        meshCollider.sharedMesh = mesh;
+        
+        IsLineRendererMeshSetup = true;
     }
 }
 

@@ -5,37 +5,28 @@ using UnityEngine;
 public class EarthArcRenderer : MonoBehaviour
 {
     public TravelHandler travelHandler;
-
+    public Camera mainCamera;
+    
     [Header("Arc Settings")]
-    [SerializeField] private Transform startPoint;
-    [SerializeField] private Transform endPoint;
     [SerializeField] private float earthRadius = 1.98f; // Earth radius in your scene units
     [SerializeField] private int arcSegments = 50;
-    [SerializeField] private float arcHeight = 0.2f; // Height above surface (as fraction of radius)
+    [SerializeField] private float arcHeight = 0.04f; // Height above surface (as fraction of radius)
 
     [Header("Visual Settings")]
     [SerializeField] private Material arcMaterial;
-    [SerializeField] private float lineWidth = 0.01f;
+    [SerializeField] private float lineWidth = 0.025f;
     [SerializeField] private Color arcColor = Color.cyan;
 
     private void Update()
     {
-        foreach (TravelData data in travelHandler.TravelData) {
-            if (!data.LineReaderSetup) SetupLineRenderer(data);
+        for (int i = 0; i < travelHandler.TravelData.Count; i++) {
+            TravelData data = travelHandler.TravelData[i];
+            
+            if (!data.IsLineReaderSetup) 
+                data.SetupLineRenderer(arcMaterial, arcColor, lineWidth, arcSegments, mainCamera);
+            
             DrawArc(data);
         }
-    }
-
-    void SetupLineRenderer(TravelData data)
-    {
-        data.LineRenderer.material = arcMaterial;
-        data.LineRenderer.startColor = arcColor;
-        data.LineRenderer.endColor = arcColor;
-        data.LineRenderer.startWidth = lineWidth;
-        data.LineRenderer.endWidth = lineWidth;
-        data.LineRenderer.positionCount = arcSegments;
-        data.LineRenderer.useWorldSpace = true;
-        data.LineReaderSetup = true;
     }
 
     void DrawArc(TravelData data)
@@ -76,7 +67,9 @@ public class EarthArcRenderer : MonoBehaviour
             float heightMultiplier = 1.0f + arcHeight * heightMult * Mathf.Sin(t * Mathf.PI);
             Vector3 position = earthCenter + direction * (earthRadius * heightMultiplier);
 
-            data.LineRenderer.SetPosition(i, position);
+            data.LineRenderer.SetPosition(i, position); 
         }
+        
+        if (!data.IsLineRendererMeshSetup) data.GenerateMesh();
     }
 }
