@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EarthArcRenderer : MonoBehaviour
 {
-    public TravelHandler travelHandler;
+    public FlightHandler flightHandler;
     public Camera mainCamera;
-    
+
     [Header("Arc Settings")]
     [SerializeField] private float earthRadius = 1.98f; // Earth radius in your scene units
     [SerializeField] private int arcSegments = 50;
@@ -19,17 +18,17 @@ public class EarthArcRenderer : MonoBehaviour
 
     private void Update()
     {
-        for (int i = 0; i < travelHandler.TravelData.Count; i++) {
-            TravelData data = travelHandler.TravelData[i];
-            
-            if (!data.IsLineReaderSetup) 
+        for (int i = 0; i < flightHandler.FlightData.Count; i++) {
+            FlightData data = flightHandler.FlightData[i];
+
+            if (!data.IsLineReaderSetup)
                 data.SetupLineRenderer(arcMaterial, arcColor, lineWidth, arcSegments, mainCamera);
-            
+
             DrawArc(data);
         }
     }
 
-    void DrawArc(TravelData data)
+    void DrawArc(FlightData data)
     {
         Vector3 start = data.Origin.CoordinateVisual.transform.position;
         Vector3 end = data.Destination.CoordinateVisual.transform.position;
@@ -67,9 +66,9 @@ public class EarthArcRenderer : MonoBehaviour
             float heightMultiplier = 1.0f + arcHeight * heightMult * Mathf.Sin(t * Mathf.PI);
             Vector3 position = earthCenter + direction * (earthRadius * heightMultiplier);
 
-            data.LineRenderer.SetPosition(i, position); 
+            data.LineRenderer.SetPosition(i, position);
         }
-        
+
         if (!data.IsLineRendererMeshSetup) data.GenerateMesh();
     }
 }

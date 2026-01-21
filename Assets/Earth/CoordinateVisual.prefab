@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 434435632298966068}
   - component: {fileID: 4697131658278735606}
   - component: {fileID: 8011675157158699990}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4614426142155878828}
-  m_Layer: 0
+  - component: {fileID: 480647939841513222}
+  m_Layer: 6
   m_Name: CoordinateVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,3 +123,15 @@ Transform:
   - {fileID: 434435632298966068}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &480647939841513222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7555912206992801207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a5b1b289d70c549f85ac908ac6064d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoordinateMarker

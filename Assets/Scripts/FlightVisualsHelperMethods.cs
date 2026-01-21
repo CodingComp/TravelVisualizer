@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TravelVisuals : MonoBehaviour
+public class FlightVisualsHelperMethods : MonoBehaviour
 {
     private SphereCollider _sphereCollider;
     private float _radius;
@@ -10,11 +10,6 @@ public class TravelVisuals : MonoBehaviour
     {
         _sphereCollider = GetComponent<SphereCollider>();
         _radius = transform.localScale.y * _sphereCollider.radius;
-    }
-
-    private void Update()
-    {
-
     }
 
     public GameObject CreateCoordinateVisual(float lat, float lon)

@@ -525,43 +525,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlightStatsWidget
   canvas: {fileID: 624410124}
-  canvasRectTransform: {fileID: 624410125}
   widgetUi: {fileID: 329969048}
   widgetRect: {fileID: 463422238}
+  earthMovement: {fileID: 1486907976}
+  mainCamera: {fileID: 2114757950}
   widgetOffset: 150
-  flipWidget: 0
-  displayedFlightData:
-    callsign: 
-    callsign_icao: 
-    callsign_iata: 
-    airline:
-      name: 
-      icao: 
-      iata: 
-      country: 
-      country_iso: 
-      callsign: 
-    origin:
-      country_iso_name: 
-      country_name: 
-      elevation: 0
-      iata_code: 
-      icao_code: 
-      latitude: 0
-      longitude: 0
-      municipality: 
-      name: 
-    destination:
-      country_iso_name: 
-      country_name: 
-      elevation: 0
-      iata_code: 
-      icao_code: 
-      latitude: 0
-      longitude: 0
-      municipality: 
-      name: 
-  c: {fileID: 2114757950}
   flightNumber: {fileID: 2011279632}
   airlineText: {fileID: 1658572581}
   originText: {fileID: 1219266989}
@@ -1962,6 +1930,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Earth
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1cc11ffbe578fa547b800e780e45b9c1, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1cc11ffbe578fa547b800e780e45b9c1, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -2069,6 +2041,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EarthMovement
   rotationSpeed: -1
+  shouldRotate: 1
 --- !u!114 &1486907980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2115,14 +2088,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eafe8d8ae6bfb8564bbd686eeb5d77b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EarthArcRenderer
-  travelHandler: {fileID: 1806719749}
+  flightHandler: {fileID: 1806719749}
   mainCamera: {fileID: 2114757950}
   earthRadius: 1.98
   arcSegments: 50
   arcHeight: 0.04
   arcMaterial: {fileID: 2100000, guid: 4c9f5bc8018ca92389eb7da1c09eb131, type: 2}
   lineWidth: 0.025
-  arcColor: {r: 0, g: 1, b: 1, a: 1}
+  arcColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &1529811443
 GameObject:
   m_ObjectHideFlags: 0
@@ -2470,6 +2443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Startup
   camInputController: {fileID: 1305393490}
+  mainCamera: {fileID: 2114757950}
 --- !u!4 &1806719748
 Transform:
   m_ObjectHideFlags: 0
@@ -2498,7 +2472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TravelHandler
   earthTransform: {fileID: 1486907975}
-  travelVisuals: {fileID: 1486907980}
+  flightVisuals: {fileID: 1486907980}
   inputField: {fileID: 1378562907}
 --- !u!1 &1898664591
 GameObject:

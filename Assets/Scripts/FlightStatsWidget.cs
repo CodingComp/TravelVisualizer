@@ -3,71 +3,98 @@ using UnityEngine;
 
 public class FlightStatsWidget : MonoBehaviour
 {
+    [Header("References")]
     public Canvas canvas;
-    public RectTransform canvasRectTransform;
     public GameObject widgetUi;
     public RectTransform widgetRect;
+    public EarthMovement earthMovement;
+    public Camera mainCamera;
 
+    [Header("Settings")]
     public float widgetOffset = 150.0f;
-    public bool flipWidget = false;
-    private Vector2 _offset;
-    
-    public Flightroute displayedFlightData;
 
-    public Camera c;
-
+    [Header("Ui Elements")]
     [SerializeField] private TMP_Text flightNumber;
     [SerializeField] private TMP_Text airlineText;
     [SerializeField] private TMP_Text originText;
     [SerializeField] private TMP_Text originCountryText;
     [SerializeField] private TMP_Text destinationText;
     [SerializeField] private TMP_Text destinationCountryText;
-    
+
+    private bool _flipWidget;
+    private Vector2 _offset;
+
+    private FlightData _displayedFlightData;
+    private GameObject _hoveredGo;
+
+    private const int FlightLayer = 6;
+    private int _flightLayerMask;
+
     private void Awake()
     {
         _offset = new Vector2(0.0f, widgetOffset);
         widgetUi.SetActive(false);
+
+        // Bitwise left shift to represent layer number by a single bit 
+        _flightLayerMask = 1 << FlightLayer;
+
+        Physics.queriesHitBackfaces = true;
     }
 
     private void Update()
     {
         MoveWidget();
-        
+
+        // If user is dragging world view dont display widget
+        if (Cursor.lockState == CursorLockMode.Locked) {
+            if (_hoveredGo) HideWidget();
+            return;
+        }
+
         RaycastHit hit;
-        Ray ray = c.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit))
-            Debug.Log("found " + hit.transform.name);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, _flightLayerMask)) { // Hit marker
+            if (_hoveredGo && !_hoveredGo == hit.transform.gameObject) return; // If marker is initialized and is equal to hit obj return
+
+            _hoveredGo = hit.transform.gameObject;
+            _displayedFlightData = _hoveredGo.GetComponent<CoordinateMarker>().FlightData;
+            ShowWidget();
+        }
+        else if (_hoveredGo) {
+            HideWidget();
+        }
     }
 
     private void MoveWidget()
     {
-        flipWidget = Input.mousePosition.y - (widgetOffset + 120.0f) < 0.0f;
-        
+        _flipWidget = Input.mousePosition.y - (widgetOffset + 120.0f) < 0.0f;
+
         Vector2 pos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out pos);
-        
-        Vector2 widgetPos = flipWidget ? pos + _offset : pos - _offset;
+
+        Vector2 widgetPos = _flipWidget ? pos + _offset : pos - _offset;
         widgetRect.position = canvas.transform.TransformPoint(widgetPos);
     }
 
-    public void ShowWidget(Flightroute data)
+    public void ShowWidget()
     {
-        displayedFlightData = data;
+        flightNumber.text = _displayedFlightData.Callsign;
+        airlineText.text = _displayedFlightData.Airline;
 
-        flightNumber.text = displayedFlightData.callsign;
-        airlineText.text = displayedFlightData.airline.name;
-        
-        originText.text = displayedFlightData.origin.iata_code;
-        originCountryText.text = displayedFlightData.origin.country_name;
-        
-        destinationText.text = displayedFlightData.destination.iata_code;
-        destinationCountryText.text = displayedFlightData.destination.country_name;
-        
+        originText.text = _displayedFlightData.Origin.IataCode;
+        originCountryText.text = _displayedFlightData.Origin.Country;
+
+        destinationText.text = _displayedFlightData.Destination.IataCode;
+        destinationCountryText.text = _displayedFlightData.Destination.Country;
+
         widgetUi.gameObject.SetActive(true);
+        earthMovement.shouldRotate = false;
     }
 
     public void HideWidget()
     {
         widgetUi.gameObject.SetActive(false);
+        earthMovement.shouldRotate = true;
+        _hoveredGo = null;
     }
 }
