@@ -53,8 +53,8 @@ public class FlightStatsWidget : MonoBehaviour
 
         RaycastHit hit;
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, _flightLayerMask)) { // Hit marker
-            if (_hoveredGo && !_hoveredGo == hit.transform.gameObject) return; // If marker is initialized and is equal to hit obj return
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, _flightLayerMask)) {   // Hit marker
+            if (_hoveredGo && !_hoveredGo == hit.transform.gameObject) return;        // If marker is initialized and is equal to hit obj return
 
             _hoveredGo = hit.transform.gameObject;
             _displayedFlightData = _hoveredGo.GetComponent<CoordinateMarker>().FlightData;

@@ -129,12 +129,19 @@ public class FlightHandler : MonoBehaviour
 
     public void Awake()
     {
-        StartCoroutine(RequestFlightData("DL56"));
+        // StartCoroutine(RequestFlightData("DL56"));
     }
 
     public void InputFlight()
     {
         StartCoroutine(RequestFlightData(inputField.text));
+    }
+
+    public void ImportFlights(string[] flights)
+    {
+        foreach (string flight in flights) {
+            StartCoroutine(RequestFlightData(flight));
+        }
     }
 
     IEnumerator RequestFlightData(string callsign)
