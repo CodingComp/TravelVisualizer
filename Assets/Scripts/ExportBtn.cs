@@ -3,21 +3,26 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Runtime.InteropServices;
+using System.Text;
 
 public class ExportBtn : MonoBehaviour
 {
     public FlightHandler flightHandler;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-    DllImport("__Internal")
-    private static extern void UploadFile(string objName, string methodName, string filter, bool multiple);
-    
+
+    [DllImport("__Internal")]
+    private static extern void DownloadFile(string gameObjectName, string methodName, string filename, byte[] byteArray, int byteArraySize);
+
     public void OnClickOpen() {
-        UploadFile(gameObject.name, "OnFileUpload", ".csv", false);
+        var bytes = Encoding.UTF8.GetBytes(GetAllFlightData());
+        DownloadFile(gameObject.name, "OnFileDownload", "Flights.csv", bytes, bytes.Length);
     }
-    
-    public void OnFileUpload(string url) {
-        StartCoroutine(OutputRoutineUpload(url));
+
+    // Called from browser
+    public void OnFileDownload() {
+        
     }
 
 #else
