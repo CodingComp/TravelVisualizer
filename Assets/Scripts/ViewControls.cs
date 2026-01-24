@@ -1,5 +1,6 @@
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ViewControls : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class ViewControls : MonoBehaviour
 
     public float scrollMult = 2.0f;
     public float radiusMax = 10.0f;
-    public float radiusMin = 2.0f;
+    public float radiusMin = 3.0f;
     
     private void Awake()
     {
@@ -36,8 +37,8 @@ public class ViewControls : MonoBehaviour
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         bool hitEarth = Physics.Raycast(ray, out RaycastHit _, Mathf.Infinity, _earthLayerMask);
-
-        if (hitEarth && Input.GetMouseButtonDown(0)) {
+        bool isOverUI = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+        if (!isOverUI && hitEarth && Mouse.current.leftButton.wasPressedThisFrame) {
             Cursor.lockState = CursorLockMode.Locked;
             camInputController.Controllers[0].Enabled = true;
             camInputController.Controllers[1].Enabled = true;
