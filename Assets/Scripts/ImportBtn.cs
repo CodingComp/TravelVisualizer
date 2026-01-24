@@ -26,7 +26,7 @@ public class ImportBtn : MonoBehaviour
 
     public void OnClickOpen()
     {
-        string[] paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "csv", false);
+        string[] paths = StandaloneFileBrowser.OpenFilePanel("Import Flights", "", "csv", false);
         if (paths.Length > 0) {
             StartCoroutine(OutputRoutineOpen(new System.Uri(paths[0]).AbsoluteUri));
         }

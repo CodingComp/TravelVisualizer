@@ -3,12 +3,17 @@ using UnityEngine;
 
 public class ViewControls : MonoBehaviour
 {
+    public CinemachineOrbitalFollow camOrbit;
     public CinemachineInputAxisController camInputController;
     public Camera mainCamera;
 
     private const int EarthLayer = 7;
     private int _earthLayerMask;
 
+    public float scrollMult = 2.0f;
+    public float radiusMax = 10.0f;
+    public float radiusMin = 2.0f;
+    
     private void Awake()
     {
         _earthLayerMask = 1 << EarthLayer;
@@ -16,6 +21,12 @@ public class ViewControls : MonoBehaviour
 
     public void Update()
     {
+        float mouseScroll = Input.GetAxis("Mouse ScrollWheel");
+        if (mouseScroll != 0) {
+            mouseScroll *= -1*scrollMult;
+            if (mouseScroll + camOrbit.Radius >= radiusMin && mouseScroll + camOrbit.Radius <= radiusMax) camOrbit.Radius += mouseScroll;
+        }
+        
         if (Cursor.lockState == CursorLockMode.Locked && Input.GetMouseButtonUp(0)) {
             Cursor.lockState = CursorLockMode.None;
             camInputController.Controllers[0].Enabled = false;

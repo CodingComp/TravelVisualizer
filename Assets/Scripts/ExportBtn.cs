@@ -29,8 +29,8 @@ public class ExportBtn : MonoBehaviour
 
     public void OnClickOpen()
     {
-        string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "csv", "csv");
-        File.WriteAllText(path, GetAllFlightData());
+        string path = StandaloneFileBrowser.SaveFilePanel("Save Flights", "", "Flights", "csv");
+        if (path.Length > 0) File.WriteAllText(path, GetAllFlightData());
     }
 
 #endif

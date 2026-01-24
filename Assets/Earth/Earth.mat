@@ -42,7 +42,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AtmosphereMultiply: 1.25
-    - _AtmospherePow: 4
+    - _AtmospherePow: 6
     - _SunsetIntensity: 0.7464286
     m_Colors:
     - _AtmosphereColor: {r: 0.37046102, g: 0.5302079, b: 0.7075472, a: 1}
