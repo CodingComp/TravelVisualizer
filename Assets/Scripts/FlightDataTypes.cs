@@ -31,7 +31,6 @@ public class Flightroute
     public string callsign_iata;
     public Airline airline;
     public Origin origin;
-    // Airport name
     public Destination destination;
 }
 
@@ -46,7 +45,6 @@ public class Origin
     public float latitude;
     public float longitude;
     public string municipality;
-    // Airport name
     public string name;
 }
 

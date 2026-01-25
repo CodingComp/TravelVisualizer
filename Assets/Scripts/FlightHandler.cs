@@ -11,7 +11,8 @@ public class FlightData
 
     // Line renderer used for visualizing travel line
     public readonly LineRenderer LineRenderer;
-
+    
+    public GameObject gameObject;
     private MeshCollider _meshCollider;
 
     public readonly string Callsign;
@@ -24,10 +25,13 @@ public class FlightData
         Origin.CoordinateVisual.transform, Destination.CoordinateVisual.transform
     };
 
-    public FlightData(Flightroute data, GameObject originVisual, GameObject destinationVisual)
+    public FlightData(Flightroute data, GameObject visual)
     {
         Callsign = data.callsign;
         Airline = data.airline.name;
+        gameObject = visual;
+        
+        CoordinateMarker cm = visual.GetComponent<CoordinateMarker>();
 
         Origin = new FlightLocationData(
             data.origin.latitude,
@@ -37,7 +41,7 @@ public class FlightData
             data.origin.iata_code,
             data.origin.name,
             data.origin.elevation,
-            originVisual);
+            cm.originMarker);
 
         Destination = new FlightLocationData(
             data.destination.latitude,
@@ -47,20 +51,16 @@ public class FlightData
             data.destination.iata_code,
             data.destination.name,
             data.destination.elevation,
-            destinationVisual);
+            cm.destinationMarker);
 
-        LineRenderer = Origin.CoordinateVisual.AddComponent<LineRenderer>();
-        Origin.CoordinateVisual.GetComponent<CoordinateMarker>().FlightData = this;
+        LineRenderer = visual.GetComponent<LineRenderer>();
+        visual.GetComponent<CoordinateMarker>().FlightData = this;
         IsLineReaderSetup = false;
     }
 
-    public void SetupLineRenderer(Material arcMaterial, Color arcColor, float lineWidth, int arcSegments, Camera mainCamera)
+    public void SetupLineRenderer(float lineWidth, int arcSegments, Camera mainCamera)
     {
         if (IsLineReaderSetup) return;
-
-        LineRenderer.material = arcMaterial;
-        LineRenderer.startColor = arcColor;
-        LineRenderer.endColor = arcColor;
         LineRenderer.startWidth = lineWidth;
         LineRenderer.endWidth = lineWidth;
         LineRenderer.positionCount = arcSegments;
@@ -72,13 +72,13 @@ public class FlightData
 
     public void GenerateMesh()
     {
-        if (_meshCollider == null) _meshCollider = Origin.CoordinateVisual.AddComponent<MeshCollider>();
+        if (_meshCollider == null) _meshCollider = gameObject.AddComponent<MeshCollider>();
 
         Mesh mesh = new Mesh();
         LineRenderer.BakeMesh(mesh, true);
 
         var vertices = mesh.vertices;
-        Origin.CoordinateVisual.transform.InverseTransformPoints(vertices);
+        gameObject.transform.InverseTransformPoints(vertices);
         mesh.vertices = vertices;
         mesh.RecalculateBounds();
         _meshCollider.sharedMesh = mesh;
@@ -127,11 +127,6 @@ public class FlightHandler : MonoBehaviour
     [Header("Ui")]
     public TMP_InputField inputField;
 
-    public void Awake()
-    {
-        // StartCoroutine(RequestFlightData("DL56"));
-    }
-
     public void InputFlight()
     {
         StartCoroutine(RequestFlightData(inputField.text));
@@ -151,7 +146,6 @@ public class FlightHandler : MonoBehaviour
 
         if (www.result != UnityWebRequest.Result.Success) {
             Debug.Log(www.error);
-            // Display error message to user
         }
         else {
             FlightDataRequest data = JsonUtility.FromJson<FlightDataRequest>(www.downloadHandler.text);
@@ -161,8 +155,7 @@ public class FlightHandler : MonoBehaviour
 
     private void AddFlightData(Flightroute data)
     {
-        GameObject originVisual = flightVisuals.CreateCoordinateVisual(data.origin.latitude, data.origin.longitude);
-        GameObject destinationVisual = flightVisuals.CreateCoordinateVisual(data.destination.latitude, data.destination.longitude);
-        FlightData.Add(new FlightData(data, originVisual, destinationVisual));
+        GameObject originVisual = flightVisuals.CreateCoordinateVisual(data.origin.latitude, data.origin.longitude, data.destination.latitude, data.destination.longitude);
+        FlightData.Add(new FlightData(data, originVisual));
     }
 }

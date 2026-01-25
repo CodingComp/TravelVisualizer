@@ -1,23 +1,20 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class UiManager : MonoBehaviour
 {
     public RectTransform mainUiContainer;
     public GameObject tabIcon;
-
-    [SerializeField] private float inactivityTime = 10f;
+    public CanvasGroup mainUiGroup;
+    
+    [SerializeField] private float inactivityTime = 8f;
+    [SerializeField] private float lerpSpeed = 5.0f;
+    [SerializeField] private float posLerpSpeed = 6.0f;
+    
     private float _lastInputTime;
 
     private float _uiTargetAlpha = 0.0f;
     private float _currentAlpha;
-    [SerializeField] private float lerpSpeed = 5f;
-    [SerializeField] private float posLerpSpeed = 6f; 
     
-    public CanvasGroup mainUiGroup;
-    public CanvasGroup controlsGroup;
-
     private bool _mainUiOpen;
     private float _mainUiClosePos = 139.0f;
     private float _mainUiCurrentPos;
@@ -31,7 +28,6 @@ public class UiManager : MonoBehaviour
         _mainUiClosePos = _mainUiCurrentPos = _mainUiTargetPos = mainUiContainer.position.y;
         _currentTabRot = tabIcon.transform.localRotation.eulerAngles.z;
         mainUiGroup.alpha = 0.0f;
-        controlsGroup.alpha = 0.0f;
     }
 
     void Start()
@@ -56,11 +52,10 @@ public class UiManager : MonoBehaviour
             if (_mainUiOpen) ToggleMainUi();
         }
         
-        // Lerp to target pos
+        // Lerp to target value
         
         _currentAlpha = Mathf.Lerp(_currentAlpha, _uiTargetAlpha, lerpSpeed * Time.deltaTime);
         mainUiGroup.alpha = _currentAlpha;
-        controlsGroup.alpha = _currentAlpha;
         
         _mainUiCurrentPos = Mathf.Lerp(_mainUiCurrentPos, _mainUiTargetPos, posLerpSpeed * Time.deltaTime);
         mainUiContainer.anchoredPosition = new Vector3(0.0f, _mainUiCurrentPos, 0.0f);
@@ -74,7 +69,5 @@ public class UiManager : MonoBehaviour
         _mainUiOpen = !_mainUiOpen;
         _mainUiTargetPos = _mainUiOpen ? 0.0f : _mainUiClosePos;
         _tabTargetRot = _mainUiOpen ? 0.0f : 180.0f;
-        
-        print(_mainUiTargetPos + " " + _tabTargetRot);
     }
 }

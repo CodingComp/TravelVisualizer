@@ -12,10 +12,12 @@ public class FlightVisualsHelperMethods : MonoBehaviour
         _radius = transform.localScale.y * _sphereCollider.radius;
     }
 
-    public GameObject CreateCoordinateVisual(float lat, float lon)
+    public GameObject CreateCoordinateVisual(float originLat, float originLon, float  destinationLat, float destinationLon)
     {
         GameObject coordinateVisual = Instantiate(marker, transform);
-        coordinateVisual.transform.position = CoordinateToSphere(lat, lon);
+        CoordinateMarker cm = coordinateVisual.GetComponent<CoordinateMarker>();
+        coordinateVisual.transform.position = CoordinateToSphere(originLat, originLon);
+        cm.destinationMarker.transform.position = CoordinateToSphere(destinationLat, destinationLon);
         return coordinateVisual;
     }
 

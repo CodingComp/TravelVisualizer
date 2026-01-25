@@ -7,14 +7,10 @@ public class EarthArcRenderer : MonoBehaviour
     public Camera mainCamera;
 
     [Header("Arc Settings")]
-    [SerializeField] private float earthRadius = 1.98f; // Earth radius in your scene units
+    [SerializeField] private float earthRadius = 1.98f;
     [SerializeField] private int arcSegments = 50;
-    [SerializeField] private float arcHeight = 0.04f; // Height above surface (as fraction of radius)
-
-    [Header("Visual Settings")]
-    [SerializeField] private Material arcMaterial;
+    [SerializeField] private float arcHeight = 0.04f;
     [SerializeField] private float lineWidth = 0.025f;
-    [SerializeField] private Color arcColor = Color.cyan;
 
     private void Update()
     {
@@ -22,7 +18,7 @@ public class EarthArcRenderer : MonoBehaviour
             FlightData data = flightHandler.FlightData[i];
 
             if (!data.IsLineReaderSetup)
-                data.SetupLineRenderer(arcMaterial, arcColor, lineWidth, arcSegments, mainCamera);
+                data.SetupLineRenderer(lineWidth, arcSegments, mainCamera);
 
             DrawArc(data);
         }
